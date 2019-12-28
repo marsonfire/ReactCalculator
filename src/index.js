@@ -3,37 +3,37 @@ import ReactDom from 'react-dom';
 import "./index.css";
 
 
-function Button(props){
-    return(
+function Button(props) {
+    return (
         <button>
             {props.value}
         </button>
     )
 }
 
-class ButtonTable extends React.Component{
-    constructor(props){
+class ButtonTable extends React.Component {
+    constructor(props) {
         super(props);
         this.state = {
             value: null,
         }
     }
-    putButtonValue(i){
-        return <Button 
+    putButtonValue(i) {
+        return <Button
             value={i}
         />;
     }
 
-    render(){
-        return(
+    render() {
+        return (
             <div>
                 <table>
                     <tr>
                         <td>{this.putButtonValue('P')}</td>
                         <td>{this.putButtonValue('C')}</td>
                         <td>{this.putButtonValue('x^2')}</td>
-                        <td>{this.putButtonValue('/')}</td>    
-                    </tr> 
+                        <td>{this.putButtonValue('/')}</td>
+                    </tr>
                     <tr>
                         <td>{this.putButtonValue('7')}</td>
                         <td>{this.putButtonValue('8')}</td>
@@ -64,11 +64,13 @@ class ButtonTable extends React.Component{
     }
 }
 
-class Calculator extends React.Component{
-    render(){
-        return(
-            <div>
-                <ButtonTable />
+class Calculator extends React.Component {
+    render() {
+        return (
+            <div className="container">
+                <div className="centered">
+                    <ButtonTable />
+                </div>
             </div>
         )
     }
@@ -77,6 +79,6 @@ class Calculator extends React.Component{
 // ========================================
 
 ReactDom.render(
-  <Calculator />,
-  document.getElementById('root')  
+    <Calculator />,
+    document.getElementById('root')
 );

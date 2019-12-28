@@ -1,3 +1,17 @@
 body{
-    font: 14px;
+    font: 14px sans-serif;
+}
+
+.container {
+    text-align: center;
+}
+
+.centered{
+    display: inline-block;
+}
+
+button{
+    padding: 1px;
+    height: 25px;
+    width: 50px;
 }
