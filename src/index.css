@@ -8,10 +8,19 @@ body{
 
 .centered{
     display: inline-block;
+    width: 218px;
 }
 
 button{
     padding: 1px;
     height: 25px;
     width: 50px;
+    background: rgb(225, 248, 255);
+    border-color: gray;
+}
+
+label{
+    padding: 4px;
+    background-color: lightgray;
+    display: block;
 }

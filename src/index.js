@@ -45,7 +45,7 @@ class ButtonTable extends React.Component {
         />;
     }
 
-    putOperatorButtonVale(m){
+    putOperatorButtonVale(m) {
         return <Button
             mode={m}
             onClick={() => this.opButtonClick(m)}
@@ -55,37 +55,44 @@ class ButtonTable extends React.Component {
     buttonClick(i, m) {
         var num = parseInt(i);
         //if nan, then we're on an operator
-        if(isNaN(num)){
+        if (isNaN(num)) {
             this.setState({
                 value: "ERROR! SHOULD ONLY BE NUMBERS",
             });
         }
-        else{
+        else {
             num = Number(parseFloat(i));
-            if(isNaN(num)){
-                //can happen if we just had an error
-                //easier for when testing too...
-                num = 0; 
+            if (isNaN(num)) {
+                num = 0;
             }
-            else if(m === 0){
+            else if (m === 0) {
                 num = Number(this.state.value) + Number(num);
                 this.setState({
                     value: num,
                 });
             }
-            else if(m === 1){
-                num = Number(this.state.value) * Number(num);
-                this.setState({
-                    value: num,
-                });
+            else if (m === 1) {
+                //figure out updateState when refactoring
+                if (this.state.value === 0) {
+                    num = 1 * Number(num);
+                    this.setState({
+                        value: num,
+                    });
+                }
+                else {
+                    num = Number(this.state.value) * Number(num);
+                    this.setState({
+                        value: num,
+                    });
+                }
             }
-            else if(m === 2){
+            else if (m === 2) {
                 num = Number(this.state.value) - Number(num);
                 this.setState({
                     value: num,
                 });
             }
-            else if(m === 3){
+            else if (m === 3) {
                 num = Number(this.state.value) / Number(num);
                 this.setState({
                     value: num,
@@ -99,33 +106,64 @@ class ButtonTable extends React.Component {
     //mode 1 = multiply
     //mode 2 = subtract
     //mode 3 = divide
-    opButtonClick(m){
-        if(m === '+'){
-            //console.log("setting to addition");
+    opButtonClick(m) {
+        if (m === '+') {
             this.setState({
                 mode: 0,
                 op: m,
             });
         }
-        else if(m === 'x'){
-            //console.log("setting to multiplication");
+        else if (m === 'x') {
             this.setState({
                 mode: 1,
                 op: m,
             });
         }
-        else if(m === '-'){
-            //console.log("setting to subtraction");
+        else if (m === '-') {
             this.setState({
                 mode: 2,
                 op: m,
             });
         }
-        else if(m === '/'){
-            //console.log("setting to division");
+        else if (m === '/') {
             this.setState({
                 mode: 3,
                 op: m,
+            });
+        }
+        else if (m === '%') {
+            var percentageValue = this.state.value / 100;
+            this.setState({
+                value: percentageValue,
+            });
+        }
+        else if (m === 'C') {
+            this.setState({
+                value: 0,
+            });
+        }
+        else if (m === 'x^2') {
+            var valueSquared = this.state.value * this.state.value;
+            this.setState({
+                value: valueSquared,
+            });
+        }
+        else if (m === '+/-') {
+            var oppositeValue = this.state.value * -1;
+            this.setState({
+                value: oppositeValue,
+            });
+        }
+        else if (m === '1/x') {
+            var reciprocalValue = 1 / this.state.value;
+            this.setState({
+                value: reciprocalValue,
+            });
+        }
+        else if (m === 'x^(1/2)') {
+            var sqrRootValue = Math.sqrt(this.state.value);
+            this.setState({
+                value: sqrRootValue,
             });
         }
     }
@@ -133,41 +171,45 @@ class ButtonTable extends React.Component {
     render() {
         return (
             <div>
-                {this.putTextBox("Sum: " + this.state.value, "Operator: " + this.state.op)}
-                <table>
-                    <tbody>
-                        <tr>
-                            <td>{this.putOperatorButtonVale('P')}</td>
-                            <td>{this.putOperatorButtonVale('C')}</td>
-                            <td>{this.putOperatorButtonVale('x^2')}</td>
-                            <td>{this.putOperatorButtonVale('/')}</td>
-                        </tr>
-                        <tr>
-                            <td>{this.putNumberButtonValue('7')}</td>
-                            <td>{this.putNumberButtonValue('8')}</td>
-                            <td>{this.putNumberButtonValue('9')}</td>
-                            <td>{this.putOperatorButtonVale('x')}</td>
-                        </tr>
-                        <tr>
-                            <td>{this.putNumberButtonValue('4')}</td>
-                            <td>{this.putNumberButtonValue('5')}</td>
-                            <td>{this.putNumberButtonValue('6')}</td>
-                            <td>{this.putOperatorButtonVale('-')}</td>
-                        </tr>
-                        <tr>
-                            <td>{this.putNumberButtonValue('1')}</td>
-                            <td>{this.putNumberButtonValue('2')}</td>
-                            <td>{this.putNumberButtonValue('3')}</td>
-                            <td>{this.putOperatorButtonVale('+')}</td>
-                        </tr>
-                        <tr>
-                            <td>{this.putOperatorButtonVale('+/-')}</td>
-                            <td>{this.putNumberButtonValue('0')}</td>
-                            <td>{this.putOperatorButtonVale('.')}</td>
-                            <td>{this.putOperatorButtonVale('=')}</td>
-                        </tr>
-                    </tbody>
-                </table>
+                <h1>Welcome to the Calculator </h1>
+                <div className="centered">
+                    {this.putTextBox(this.state.value)}
+                    {this.putTextBox("Operator: " + this.state.op)}
+                    <table>
+                        <tbody>
+                            <tr>
+                                <td>{this.putOperatorButtonVale('%')}</td>
+                                <td>{this.putOperatorButtonVale('C')}</td>
+                                <td>{this.putOperatorButtonVale('x^2')}</td>
+                                <td>{this.putOperatorButtonVale('/')}</td>
+                            </tr>
+                            <tr>
+                                <td>{this.putNumberButtonValue('7')}</td>
+                                <td>{this.putNumberButtonValue('8')}</td>
+                                <td>{this.putNumberButtonValue('9')}</td>
+                                <td>{this.putOperatorButtonVale('x')}</td>
+                            </tr>
+                            <tr>
+                                <td>{this.putNumberButtonValue('4')}</td>
+                                <td>{this.putNumberButtonValue('5')}</td>
+                                <td>{this.putNumberButtonValue('6')}</td>
+                                <td>{this.putOperatorButtonVale('-')}</td>
+                            </tr>
+                            <tr>
+                                <td>{this.putNumberButtonValue('1')}</td>
+                                <td>{this.putNumberButtonValue('2')}</td>
+                                <td>{this.putNumberButtonValue('3')}</td>
+                                <td>{this.putOperatorButtonVale('+')}</td>
+                            </tr>
+                            <tr>
+                                <td>{this.putOperatorButtonVale('+/-')}</td>
+                                <td>{this.putNumberButtonValue('0')}</td>
+                                <td>{this.putOperatorButtonVale('1/x')}</td>
+                                <td>{this.putOperatorButtonVale('x^(1/2)')}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         );
     }
@@ -177,9 +219,7 @@ class Calculator extends React.Component {
     render() {
         return (
             <div className="container">
-                <div className="centered">
-                    <ButtonTable />
-                </div>
+                <ButtonTable />
             </div>
         )
     }
