@@ -27,7 +27,7 @@ class ButtonTable extends React.Component {
         this.state = {
             value: 0,
             mode: 0,
-            op: '+',
+            op: 'none',
         }
     }
 
@@ -57,7 +57,7 @@ class ButtonTable extends React.Component {
         //if nan, then we're on an operator
         if (isNaN(num)) {
             this.setState({
-                value: "ERROR! SHOULD ONLY BE NUMBERS",
+                value: "ERROR! NOT IMPLEMENTED",
             });
         }
         else {
@@ -65,38 +65,31 @@ class ButtonTable extends React.Component {
             if (isNaN(num)) {
                 num = 0;
             }
-            else if (m === 0) {
-                num = Number(this.state.value) + Number(num);
-                this.setState({
-                    value: num,
-                });
-            }
-            else if (m === 1) {
-                //figure out updateState when refactoring
-                if (this.state.value === 0) {
-                    num = 1 * Number(num);
+            else {
+                if (this.state.value !== 0) {
                     this.setState({
-                        value: num,
+                        value: this.state.value + num.toString(),
                     });
                 }
                 else {
-                    num = Number(this.state.value) * Number(num);
                     this.setState({
-                        value: num,
+                        value: num.toString(),
                     });
                 }
-            }
-            else if (m === 2) {
-                num = Number(this.state.value) - Number(num);
-                this.setState({
-                    value: num,
-                });
-            }
-            else if (m === 3) {
-                num = Number(this.state.value) / Number(num);
-                this.setState({
-                    value: num,
-                });
+
+                if (this.state.op != null && this.state.mode != null) {
+                    if (this.state.value === 0) {
+                        num = 1 * Number(num);
+                    }
+                    else {
+                        num = this.state.value + " " + this.state.op + " " + num;
+                    }
+                    this.setState({
+                        value: num,
+                        op: 'none',
+                        mode: null,
+                    });
+                }
             }
         }
     }
@@ -113,7 +106,7 @@ class ButtonTable extends React.Component {
                 op: m,
             });
         }
-        else if (m === 'x') {
+        else if (m === '*') {
             this.setState({
                 mode: 1,
                 op: m,
@@ -166,6 +159,72 @@ class ButtonTable extends React.Component {
                 value: sqrRootValue,
             });
         }
+        else if (m === '.') {
+            this.setState({
+                value: this.state.value + '.',
+            });
+        }
+        else if (m === '=') {
+            //was crashing and needed to make it a string in order to be checked by includes
+            //to make sure we can actually click the = and expect something to happen
+            var val = this.state.value.toString();
+            if(val.includes(" ")){
+                this.parseAndDoMath(this.state.value);
+            }
+        }
+        else if (m === '(') {
+            this.setState({
+                value: this.state.value + '(',
+            });
+        }
+        else if (m === ')') {
+            this.setState({
+                value: this.state.value + ')',
+            });
+        }
+    }
+
+    parseAndDoMath(func) {
+        var numResult;
+        var splitFunction = func.split(' ');
+        while (splitFunction.length !== 1) {
+            var index, num1, num2;
+            if (splitFunction.includes('*')) {
+                index = splitFunction.indexOf('*');
+                num1 = splitFunction[(index - 1)];
+                num2 = splitFunction[(index + 1)];
+                numResult = Number(num1) * Number(num2);
+            }
+            else if (splitFunction.includes('/')) {
+                index = splitFunction.indexOf('/');
+                num1 = splitFunction[(index - 1)];
+                num2 = splitFunction[(index + 1)];
+                numResult = Number(num1) / Number(num2);
+            }
+            else if (splitFunction.includes('+')) {
+                index = splitFunction.indexOf('+');
+                num1 = splitFunction[(index - 1)];
+                num2 = splitFunction[(index + 1)];
+                numResult = Number(num1) + Number(num2);
+            }
+            else if (splitFunction.includes('-')) {
+                index = splitFunction.indexOf('-');
+                num1 = splitFunction[(index - 1)];
+                num2 = splitFunction[(index + 1)];
+                numResult = Number(num1) - Number(num2);
+            }
+            var indexOfNum1 = index - 1;
+            var indexOfNum2 = index + 1;
+            splitFunction[indexOfNum1] = '';
+            splitFunction[indexOfNum2] = '';
+            splitFunction[index] = numResult;
+            splitFunction = splitFunction.filter(function (element) {
+                return element !== '';
+            });
+        }
+        this.setState({
+            value: numResult,
+        });
     }
 
     render() {
@@ -187,7 +246,7 @@ class ButtonTable extends React.Component {
                                 <td>{this.putNumberButtonValue('7')}</td>
                                 <td>{this.putNumberButtonValue('8')}</td>
                                 <td>{this.putNumberButtonValue('9')}</td>
-                                <td>{this.putOperatorButtonVale('x')}</td>
+                                <td>{this.putOperatorButtonVale('*')}</td>
                             </tr>
                             <tr>
                                 <td>{this.putNumberButtonValue('4')}</td>
@@ -206,6 +265,12 @@ class ButtonTable extends React.Component {
                                 <td>{this.putNumberButtonValue('0')}</td>
                                 <td>{this.putOperatorButtonVale('1/x')}</td>
                                 <td>{this.putOperatorButtonVale('x^(1/2)')}</td>
+                            </tr>
+                            <tr>
+                                <td>{this.putOperatorButtonVale('.')}</td>
+                                <td>{this.putOperatorButtonVale('=')}</td>
+                                {/* <td>{this.putOperatorButtonVale('(')}</td>
+                                <td>{this.putOperatorButtonVale(')')}</td> */}
                             </tr>
                         </tbody>
                     </table>
